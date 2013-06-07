@@ -19,6 +19,16 @@ class Stapler < Thor
     end
   end
   
+  desc "split INPUT_PDF", "Split each page of INPUT_PDF into a separate PDF."
+  def split(first_pdf_path)
+    template_page_count = count_pdf_pages(first_pdf_path)
+    (1..template_page_count).each do |template_page_number|
+      Prawn::Document.generate(first_pdf_path.gsub(/.pdf/, "") + "_page_" + template_page_number.to_s + ".pdf", :skip_page_creation => true) do |pdf|
+        pdf.start_new_page(:template => first_pdf_path, :template_page => template_page_number)
+      end
+    end
+  end
+  
   private
     def count_pdf_pages(pdf_file_path)
       pdf = Prawn::Document.new(:template => pdf_file_path)
