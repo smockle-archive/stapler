@@ -29,6 +29,13 @@ class Stapler < Thor
     end
   end
   
+  # desc "extract INPUT_PDF PAGE_NUMBER", "Split the specified page into a separate PDF."
+  # def extract(first_pdf_path, page_number)
+  #   Prawn::Document.generate(first_pdf_path.gsub(/.pdf/, "") + "_page_" + page_number.to_s + ".pdf", :skip_page_creation => true) do |pdf|
+  #     pdf.start_new_page(:template => first_pdf_path, :template_page => page_number)
+  #   end
+  # end
+  
   private
     def count_pdf_pages(pdf_file_path)
       pdf = Prawn::Document.new(:template => pdf_file_path)
