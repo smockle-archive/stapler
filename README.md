@@ -16,4 +16,4 @@ License
 
 Stapler is released under the MIT License.
 
-Stapler requires the Thor and Prawn gems. Thor is licensed under the MIT License. Prawn is dual-licensed under the Ruby License and the GPL. The Ruby License permits redistribution and modification under the 2-clause BSD License, which is compatible with the MIT License.
+Stapler requires the Thor and Prawn gems. Thor is licensed under the MIT License. Prawn is dual-licensed under the Ruby License and the GPL. The [Ruby License](http://www.ruby-lang.org/en/about/license.txt) permits redistribution and modification under the 2-clause BSD License, which is compatible with the MIT License.

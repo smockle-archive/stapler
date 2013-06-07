@@ -3,7 +3,7 @@ require "thor"
 require "prawn"
 
 class Stapler < Thor
-  desc "merge INPUT_PDFs OUTPUT_PDF", "Save the concatenation of INPUT_PDFs to OUTPUT_PDF."
+  desc "merge INPUT_PDFs OUTPUT_PDF", "Concatenate INPUT_PDFs to OUTPUT_PDF."
   def merge(*pdfs)
     first_pdf_path = pdfs.delete_at(0)
     destination = pdfs.delete_at(pdfs.length - 1)
