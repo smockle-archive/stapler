@@ -2,29 +2,34 @@
 require "thor"
 require "prawn"
 
+Prawn::Document.class_eval do
+  def concat(pdf_file)
+    if File.exists?(pdf_file)
+      pdf_temp_nb_pages = Prawn::Document.new(:template => pdf_file).page_count
+      (1..pdf_temp_nb_pages).each do |i|
+        self.start_new_page(:template => pdf_file, :template_page => i)
+      end
+    end
+  end
+end
+
 class Stapler < Thor
   desc "join INPUT_PDFs OUTPUT_PDF", "Join INPUT_PDFs in OUTPUT_PDF."
-  def join(*pdfs)
-    first_pdf_path = pdfs.delete_at(0)
-    destination = pdfs.delete_at(pdfs.length - 1)
-    
-    Prawn::Document.generate(destination, :template => first_pdf_path) do |pdf|
-      pdfs.each do |pdf_path|
-        pdf.go_to_page(pdf.page_count)
-        template_page_count = count_pdf_pages(pdf_path)
-        (1..template_page_count).each do |template_page_number|
-          pdf.start_new_page(:template => pdf_path, :template_page => template_page_number)
-        end
+  def join(*pdf_files)
+    Prawn::Document.generate(pdf_files[pdf_files.length - 1], :skip_page_creation => true) do |output|
+      pdf_files.each do |pdf|
+        output.concat(pdf)
       end
     end
   end
   
   desc "split INPUT_PDF", "Split each page of INPUT_PDF into a separate PDF."
-  def split(first_pdf_path)
-    template_page_count = count_pdf_pages(first_pdf_path)
-    (1..template_page_count).each do |template_page_number|
-      Prawn::Document.generate(first_pdf_path.gsub(/.pdf/, "") + "_page_" + template_page_number.to_s + ".pdf", :skip_page_creation => true) do |pdf|
-        pdf.start_new_page(:template => first_pdf_path, :template_page => template_page_number)
+  def split(pdf_file)
+    pdf_temp_nb_pages = Prawn::Document.new(:template => pdf_file).page_count
+    pdf_name_prefix = pdf_file.gsub(/.pdf/, "") + "_page_"
+    (1..pdf_temp_nb_pages).each do |i|
+      Prawn::Document.generate(pdf_name_prefix + i.to_s + ".pdf", :skip_page_creation => true) do |output|
+        output.start_new_page(:template => pdf_file, :template_page => i)
       end
     end
   end
@@ -35,12 +40,6 @@ class Stapler < Thor
   #     pdf.start_new_page(:template => first_pdf_path, :template_page => page_number)
   #   end
   # end
-  
-  private
-    def count_pdf_pages(pdf_file_path)
-      pdf = Prawn::Document.new(:template => pdf_file_path)
-      pdf.page_count
-    end
 end
 
 Stapler.start(ARGV)
