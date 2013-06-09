@@ -23,6 +23,9 @@ Usage
 
     # Remove the specified page.
     stapler remove input.pdf [output.pdf] 4
+    
+    # Remove the specified pages.
+    stapler remove input.pdf [output.pdf] 4..42
 
     # Split the pages of input.pdf into multiple PDFs.
     stapler split input.pdf

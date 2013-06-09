@@ -84,6 +84,11 @@ class Stapler < Thor
     end
   end
 
+  desc "insert INPUT_PDF INSERT_PDF [OUTPUT_PDF] PAGE_NUMBER", "Insert INSERT_PDF before the specified PAGE_NUMBER."
+  def insert(*args)
+    
+  end
+
   desc "join INPUT_PDFS OUTPUT_PDF", "Merge specified INPUT_PDFS into a single OUTPUT_PDF. "
   def join(*pdf_files)
     Prawn::Document.generate(pdf_files[pdf_files.length - 1], :skip_page_creation => true) do |output|
@@ -91,6 +96,48 @@ class Stapler < Thor
         output.concat(pdf)
       end
     end
+  end
+  
+  desc "remove INPUT_PDF [OUTPUT_PDF] PAGE_NUMBERS", "Remove the specified pages."
+  def remove(*args)
+    pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count
+    
+    case
+      # stapler remove input.pdf
+      when args.length == 1
+        raise ArgumentError, "Not enough arguments."
+        
+      # stapler remove input.pdf output.pdf
+      when args.length == 2 && args[1].include?(".pdf")
+        raise ArgumentError, "Not enough arguments."
+        
+      # stapler remove input.pdf 4..42
+      when args.length == 2 && args[1].is_range
+        remove = args[1].to_range
+      
+      # stapler remove input.pdf 4
+      when args.length == 2 && args[1].is_int
+        remove = Range.new(args[1].to_i, args[1].to_i)
+      
+      # stapler remove input.pdf output.pdf 4..42
+      when args.length == 3 && args[1].include?(".pdf") && args[2].is_range
+        remove = args[2].to_range
+        
+      # stapler remove input.pdf output.pdf 4
+      when args.length == 3 && args[1].include?(".pdf") && args[2].is_int
+        remove = Range.new(args[2].to_i, args[2].to_i)
+        
+      else
+        raise ArgumentError, "Invalid arguments."
+    end
+    
+    Prawn::Document.generate(args[1].include?(".pdf") ? args[1] : "output.pdf", :skip_page_creation => true) do |output|
+      (1..pdf_temp_nb_pages).each do |i|
+          if !(remove.include?(i))
+            output.start_new_page(:template => args[0], :template_page => i)
+          end
+      end
+    end    
   end
   
   desc "split INPUT_PDF", "Split the pages of INPUT_PDF into multiple PDFs."
