@@ -5,11 +5,27 @@ Stapler combines PDFs using Prawn.
 
 Usage
 =====
-    # Merge specific PDFs. 
-    stapler merge input-1.pdf input-2.pdf output.pdf
 
-    # Merge all PDFs.
-    stapler merge *.pdf output.pdf
+    # Create a PDF containing the specified page.
+    stapler get input.pdf [output.pdf] 4
+    
+    # Create a PDF containing the specified pages.
+    stapler get input.pdf [output.pdf] 4..42
+
+    # Insert a PDF before the specified page.
+    stapler insert input.pdf insert.pdf [output.pdf] 4
+
+    # Merge specified PDFs into a single PDF. 
+    stapler join input_1.pdf input_2.pdf output.pdf
+
+    # Merge all PDFs into a single PDF.
+    stapler join *.pdf output.pdf
+
+    # Remove the specified page.
+    stapler remove input.pdf [output.pdf] 4
+
+    # Split the pages of input.pdf into multiple PDFs.
+    stapler split input.pdf
     
 License
 =======
