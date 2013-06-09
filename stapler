@@ -1,47 +1,8 @@
 #!/usr/bin/env ruby
 require "thor"
 require "prawn"
-
-Prawn::Document.class_eval do
-  def concat(pdf_file)
-    if File.exists?(pdf_file)
-      pdf_temp_nb_pages = Prawn::Document.new(:template => pdf_file).page_count
-      (1..pdf_temp_nb_pages).each do |i|
-        self.start_new_page(:template => pdf_file, :template_page => i)
-      end
-    end
-  end
-end
-
-String.class_eval do
-  def is_int
-    return self.to_i.to_s == self
-  end
-  
-  def is_range
-    case
-      when self.include?("..")
-        a = self.split("..")
-        return a.length == 2 && a[0].is_int && a[1].is_int
-      when self.include?("...")
-        a = self.split("...")
-        return a.length == 2 && a[0].is_int && a[1].is_int
-      else
-        return false
-    end
-  end
-  
-  def to_range
-    case
-      when self.is_range && self.include?("..")
-        return self.split("..").inject { |s, e| Range.new(s.to_i, e.to_i) }
-      when self.is_range && self.include?("...")
-        return self.split("...").inject { |s, e| Range.new(s.to_i, e.to_i) }
-      else
-        raise TypeError, "Cannot convert " + self + " to range."
-    end
-  end
-end
+require File.expand_path("../extensions/prawn_document", __FILE__)
+require File.expand_path("../extensions/string", __FILE__)
 
 class Stapler < Thor
   desc "get INPUT_PDF [OUTPUT_PDF] PAGE_NUMBERS", "Copy the specified page in INPUT_PDF to a new OUTPUT_PDF."
