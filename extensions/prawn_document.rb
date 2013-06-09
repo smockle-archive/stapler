@@ -1,3 +1,5 @@
+require "prawn"
+
 Prawn::Document.class_eval do
   def concat(pdf_file)
     if File.exists?(pdf_file)
