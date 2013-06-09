@@ -1,7 +1,7 @@
 Stapler
 =======
 
-Stapler combines PDFs using Prawn.
+Stapler manipulates PDFs using Prawn.
 
 Usage
 =====
