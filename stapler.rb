@@ -47,7 +47,6 @@ class Stapler < Thor
   desc "get INPUT_PDF [OUTPUT_PDF] PAGE_NUMBERS", "Create an OUTPUT_PDF containing the specified pages of INPUT_PDF."
   def get(*args)
     pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count
-    pdf_name_prefix = args[0].gsub(/.pdf/, "") + "_page_"
 
     case
       # stapler get input.pdf
@@ -78,9 +77,9 @@ class Stapler < Thor
         raise ArgumentError, "Invalid arguments."
     end
 
-    (range).each do |i|
-      Prawn::Document.generate(pdf_name_prefix + i.to_s + ".pdf", :skip_page_creation => true) do |output|
-        output.start_new_page(:template => args[0], :template_page => i)
+    Prawn::Document.generate(args[1].include?(".pdf") ? args[1] : "output.pdf", :skip_page_creation => true) do |output|
+      (range).each do |i|
+          output.start_new_page(:template => args[0], :template_page => i)
       end
     end
   end
