@@ -26,8 +26,8 @@ class TestPrawnDocument < Test::Unit::TestCase
   end
   
   def test_concat
-    assert_equal Prawn::Document.new(:template => File.expand_path("../../tests/prawn_document_test_a.pdf", __FILE__)).page_count, 1
-    assert_equal Prawn::Document.new(:template => File.expand_path("../../tests/prawn_document_test_b.pdf", __FILE__)).page_count, 1
-    assert_equal Prawn::Document.new(:template => File.expand_path("../../tests/prawn_document_test_c.pdf", __FILE__)).page_count, 2
+    assert_equal Prawn::Document.new(:template => @a).page_count, 1
+    assert_equal Prawn::Document.new(:template => @b).page_count, 1
+    assert_equal Prawn::Document.new(:template => @c).page_count, 2
   end
 end
