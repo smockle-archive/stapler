@@ -20,10 +20,10 @@ String.class_eval do
   
   def is_range
     case
-      when self.include? ".."
+      when self.include?("..")
         a = self.split("..")
         return a.length == 2 && a[0].is_int && a[1].is_int
-      when self.include? "..."
+      when self.include?("...")
         a = self.split("...")
         return a.length == 2 && a[0].is_int && a[1].is_int
       else
@@ -33,9 +33,9 @@ String.class_eval do
   
   def to_range
     case
-      when self.is_range && self.include? ".."
+      when self.is_range && self.include?("..")
         return self.split("..").inject { |s, e| Range.new(s.to_i, e.to_i) }
-      when self.is_range && self.include? "..."
+      when self.is_range && self.include?("...")
         return self.split("...").inject { |s, e| Range.new(s.to_i, e.to_i) }
       else
         raise TypeError, "Cannot convert " + self + " to range."
@@ -55,7 +55,7 @@ class Stapler < Thor
         raise ArgumentError, "Not enough arguments."
         
       # stapler get input.pdf output.pdf
-      when args.length == 2 && args[1].include? ".pdf"
+      when args.length == 2 && args[1].include?(".pdf")
         raise ArgumentError, "Not enough arguments."
         
       # stapler get input.pdf 4..42
@@ -67,11 +67,11 @@ class Stapler < Thor
         range = Range.new(args[1].to_i, args[1].to_i)
       
       # stapler get input.pdf output.pdf 4..42
-      when args.length == 3 && args[1].include? ".pdf" && args[2].is_range
+      when args.length == 3 && args[1].include?(".pdf") && args[2].is_range
         range = args[2].to_range
         
       # stapler get input.pdf output.pdf 4
-      when args.length == 3 && args[1].include? ".pdf" && args[2].is_int
+      when args.length == 3 && args[1].include?(".pdf") && args[2].is_int
         range = Range.new(args[2].to_i, args[2].to_i)
         
       else
@@ -83,6 +83,7 @@ class Stapler < Thor
         output.start_new_page(:template => args[0], :template_page => i)
       end
     end
+  end
 
   desc "join INPUT_PDFS OUTPUT_PDF", "Merge specified INPUT_PDFS into a single OUTPUT_PDF. "
   def join(*pdf_files)
