@@ -75,7 +75,7 @@ class Stapler < Thor
         range = Range.new(args[2].to_i, args[2].to_i)
         
       else
-        raise ArgumentError, "Invali."
+        raise ArgumentError, "Invalid arguments."
     end
 
     (range).each do |i|
@@ -105,13 +105,6 @@ class Stapler < Thor
       end
     end
   end
-  
-  # desc "extract INPUT_PDF PAGE_NUMBER", "Split the specified page into a separate PDF."
-  # def extract(first_pdf_path, page_number)
-  #   Prawn::Document.generate(first_pdf_path.gsub(/.pdf/, "") + "_page_" + page_number.to_s + ".pdf", :skip_page_creation => true) do |pdf|
-  #     pdf.start_new_page(:template => first_pdf_path, :template_page => page_number)
-  #   end
-  # end
 end
 
 Stapler.start(ARGV)
