@@ -151,4 +151,6 @@ class Stapler < Thor
   end
 end
 
-Stapler.start(ARGV)
+if $0 == __FILE__
+  Stapler.start(ARGV)
+end
