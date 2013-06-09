@@ -44,7 +44,7 @@ String.class_eval do
 end
 
 class Stapler < Thor
-  desc "get INPUT_PDF [OUTPUT_PDF] PAGE_NUMBERS", "Create an OUTPUT_PDF containing the specified pages of INPUT_PDF."
+  desc "get INPUT_PDF [OUTPUT_PDF] PAGE_NUMBERS", "Copy the specified page in INPUT_PDF to a new OUTPUT_PDF."
   def get(*args)
     pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count
 
@@ -86,7 +86,44 @@ class Stapler < Thor
 
   desc "insert INPUT_PDF INSERT_PDF [OUTPUT_PDF] PAGE_NUMBER", "Insert INSERT_PDF before the specified PAGE_NUMBER."
   def insert(*args)
+    pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count + 1
     
+    case
+      # stapler insert input.pdf
+      when args.length == 1
+        raise ArgumentError, "Not enough arguments."
+        
+      # stapler insert input.pdf insert.pdf
+      when args.length == 2 && args[1].include?(".pdf")
+        raise ArgumentError, "Not enough arguments."
+        
+      # stapler insert input.pdf insert.pdf output.pdf
+      when args.length == 3 && args[1].include?(".pdf") && args[2].include?(".pdf")
+        raise ArgumentError, "Not enough arguments."
+      
+      # stapler insert input.pdf insert.pdf 4
+      when args.length == 3 && args[1].include?(".pdf") && args[2].is_int
+        insert = args[2].to_i
+        
+      # stapler insert input.pdf insert.pdf output.pdf 4
+      when args.length == 4 && args[1].include?(".pdf") && args[2].include?(".pdf") && args[3].is_int
+        insert = args[3].to_i
+        
+      else
+        raise ArgumentError, "Invalid arguments."
+    end
+    
+    Prawn::Document.generate(args[2].include?(".pdf") ? args[2] : "asdfoutput.pdf", :skip_page_creation => true) do |output|
+      (1..pdf_temp_nb_pages).each do |i|
+          if i < insert
+            output.start_new_page(:template => args[0], :template_page => i)
+          elsif i == insert
+            output.concat(args[1])
+          elsif i > insert
+            output.start_new_page(:template => args[0], :template_page => i - 1)
+          end
+      end
+    end   
   end
 
   desc "join INPUT_PDFS OUTPUT_PDF", "Merge specified INPUT_PDFS into a single OUTPUT_PDF. "

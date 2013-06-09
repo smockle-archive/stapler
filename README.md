@@ -6,10 +6,10 @@ Stapler combines PDFs using Prawn.
 Usage
 =====
 
-    # Create a PDF containing the specified page.
+    # Copy the specified page to a new PDF.
     stapler get input.pdf [output.pdf] 4
     
-    # Create a PDF containing the specified pages.
+    # Copy the specified pages to a new PDF.
     stapler get input.pdf [output.pdf] 4..42
 
     # Insert a PDF before the specified page.
