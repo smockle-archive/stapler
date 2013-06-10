@@ -47,11 +47,26 @@ class TestStapler < Test::Unit::TestCase
     # stapler get input.pdf output.pdf
     exception = assert_raise(ArgumentError) { @stapler.get(@input, @output) }
     assert_equal "Not enough arguments.", exception.message
-      
+
+    # stapler get input.pdf 2..3
+    @stapler.get(@input, "2..3")
+    out = "output.pdf"
+    assert File.exist?(out)
+    assert_equal Prawn::Document.new(:template => out).page_count, 2
+    if File.exist?(out) then File.delete(out) end
+   
+    # stapler get input.pdf 2
+    @stapler.get(@input, "2")
+    out = "output.pdf"
+    assert File.exist?(out)
+    assert_equal Prawn::Document.new(:template => out).page_count, 1
+    if File.exist?(out) then File.delete(out) end
+
     # stapler get input.pdf output.pdf 2..3
     @stapler.get(@input, @output, "2..3")
     assert File.exist?(@output)
     assert_equal Prawn::Document.new(:template => @output).page_count, 2
+    if File.exist?(@output) then File.delete(@output) end
     
     # stapler get input.pdf output.pdf 2
     @stapler.get(@input, @output, "2")
@@ -71,7 +86,16 @@ class TestStapler < Test::Unit::TestCase
     # stapler insert input.pdf insert.pdf
     exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a) }
     assert_equal "Not enough arguments.", exception.message
-      
+    
+    # stapler insert input.pdf insert.pdf 2      
+    @stapler.insert(@input, @a, "2")
+    out = "output.pdf"
+    assert_equal Prawn::Document.new(:template => @a).page_count, 1
+    assert_equal Prawn::Document.new(:template => @input).page_count, 3
+    assert File.exist?(out)
+    assert_equal Prawn::Document.new(:template => out).page_count, 4
+    if File.exist?(out) then File.delete(out) end
+
     # stapler insert input.pdf insert.pdf output.pdf
     exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a, @output) }
     assert_equal "Not enough arguments.", exception.message
@@ -85,14 +109,87 @@ class TestStapler < Test::Unit::TestCase
   end
   
   def test_join
-    assert true
+    # stapler join
+    exception = assert_raise(ArgumentError) { @stapler.join() }
+    assert_equal "Not enough arguments.", exception.message
+    
+    # stapler join output.pdf
+    exception = assert_raise(ArgumentError) { @stapler.join(@output) }
+    assert_equal "Not enough arguments.", exception.message
+    
+    # stapler join a.pdf output.pdf
+    @stapler.join(@a, @output)
+    assert_equal Prawn::Document.new(:template => @a).page_count, 1
+    assert File.exist?(@output)
+    assert_equal Prawn::Document.new(:template => @output).page_count, 1
+    if File.exist?(@output) then File.delete(@output) end
+    
+    # stapler join a.pdf b.pdf output.pdf
+    @stapler.join(@a, @b, @output)
+    assert_equal Prawn::Document.new(:template => @a).page_count, 1
+    assert_equal Prawn::Document.new(:template => @b).page_count, 1
+    assert File.exist?(@output)
+    assert_equal Prawn::Document.new(:template => @output).page_count, 2
   end
   
   def test_remove
-    assert true
+    # stapler remove
+    exception = assert_raise(ArgumentError) { @stapler.remove() }
+    assert_equal "Invalid arguments.", exception.message
+    
+    # stapler remove input.pdf
+    exception = assert_raise(ArgumentError) { @stapler.remove(@input) }
+    assert_equal "Not enough arguments.", exception.message
+      
+    # stapler remove input.pdf output.pdf
+    exception = assert_raise(ArgumentError) { @stapler.remove(@input, @output) }
+    assert_equal "Not enough arguments.", exception.message
+    
+    # stapler remove input.pdf 2..3
+    @stapler.remove(@input, "2..3")
+    out = "output.pdf"
+    assert_equal Prawn::Document.new(:template => @input).page_count, 3
+    assert File.exist?(out)
+    assert_equal Prawn::Document.new(:template => out).page_count, 1
+    if File.exist?(out) then File.delete(out) end
+
+    # stapler remove input.pdf 2
+    @stapler.remove(@input, "2")
+    out = "output.pdf"
+    assert_equal Prawn::Document.new(:template => @input).page_count, 3
+    assert File.exist?(out)
+    assert_equal Prawn::Document.new(:template => out).page_count, 2
+    if File.exist?(out) then File.delete(out) end
+
+    # stapler remove input.pdf output.pdf 2..3
+    @stapler.remove(@input, @output, "2..3")
+    assert_equal Prawn::Document.new(:template => @input).page_count, 3
+    assert File.exist?(@output)
+    assert_equal Prawn::Document.new(:template => @output).page_count, 1
+    if File.exist?(@output) then File.delete(@output) end
+
+    # stapler remove input.pdf output.pdf 2
+    @stapler.remove(@input, @output, "2")
+    assert_equal Prawn::Document.new(:template => @input).page_count, 3
+    assert File.exist?(@output)
+    assert_equal Prawn::Document.new(:template => @output).page_count, 2
   end
   
   def test_split
-    assert true
+    # stapler split
+    exception = assert_raise(ArgumentError) { @stapler.split() }
+    assert_equal "wrong number of arguments (0 for 1)", exception.message
+    
+    # stapler split input.pdf
+    @stapler.split(@input)
+    x = "stapler_test_input_page_1.pdf"
+    y = "stapler_test_input_page_2.pdf"
+    z = "stapler_test_input_page_3.pdf"
+    assert File.exist?(x)
+    assert File.exist?(y)
+    assert File.exist?(z)
+    if File.exist?(x) then File.delete(x) end
+    if File.exist?(y) then File.delete(y) end
+    if File.exist?(z) then File.delete(z) end
   end
 end

@@ -74,7 +74,7 @@ class Stapler < Thor
         raise ArgumentError, "Invalid arguments."
     end
     
-    Prawn::Document.generate(args[2].include?(".pdf") ? args[2] : "asdfoutput.pdf", :skip_page_creation => true) do |output|
+    Prawn::Document.generate(args[2].include?(".pdf") ? args[2] : "output.pdf", :skip_page_creation => true) do |output|
       (1..pdf_temp_nb_pages).each do |i|
           if i < insert
             output.start_new_page(:template => args[0], :template_page => i)
@@ -89,6 +89,10 @@ class Stapler < Thor
 
   desc "join INPUT_PDFS OUTPUT_PDF", "Merge specified INPUT_PDFS into a single OUTPUT_PDF. "
   def join(*pdf_files)
+    if (pdf_files.length < 2)
+      raise ArgumentError, "Not enough arguments."
+    end
+    
     Prawn::Document.generate(pdf_files[pdf_files.length - 1], :skip_page_creation => true) do |output|
       pdf_files.each do |pdf|
         output.concat(pdf)
@@ -99,7 +103,7 @@ class Stapler < Thor
   desc "remove INPUT_PDF [OUTPUT_PDF] PAGE_NUMBERS", "Remove the specified pages."
   def remove(*args)
     pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count
-    
+        
     case
       # stapler remove input.pdf
       when args.length == 1
@@ -141,7 +145,7 @@ class Stapler < Thor
   desc "split INPUT_PDF", "Split the pages of INPUT_PDF into multiple PDFs."
   def split(pdf_file)
     pdf_temp_nb_pages = Prawn::Document.new(:template => pdf_file).page_count
-    pdf_name_prefix = pdf_file.gsub(/.pdf/, "") + "_page_"
+    pdf_name_prefix = File.basename(pdf_file, File.extname(pdf_file)) + "_page_"
 
     (1..pdf_temp_nb_pages).each do |i|
       Prawn::Document.generate(pdf_name_prefix + i.to_s + ".pdf", :skip_page_creation => true) do |output|
