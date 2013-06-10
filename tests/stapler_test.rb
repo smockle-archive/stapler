@@ -38,7 +38,7 @@ class TestStapler < Test::Unit::TestCase
   def test_get
     # stapler get
     exception = assert_raise(ArgumentError) { @stapler.get() }
-    assert_equal "Invalid arguments.", exception.message
+    assert_equal "Not enough arguments.", exception.message
     
     # stapler get input.pdf
     exception = assert_raise(ArgumentError) { @stapler.get(@input) }
@@ -77,7 +77,7 @@ class TestStapler < Test::Unit::TestCase
   def test_insert
     # stapler insert
     exception = assert_raise(ArgumentError) { @stapler.insert() }
-    assert_equal "Invalid arguments.", exception.message
+    assert_equal "Not enough arguments.", exception.message
     
     # stapler insert input.pdf
     exception = assert_raise(ArgumentError) { @stapler.insert(@input) }
@@ -135,7 +135,7 @@ class TestStapler < Test::Unit::TestCase
   def test_remove
     # stapler remove
     exception = assert_raise(ArgumentError) { @stapler.remove() }
-    assert_equal "Invalid arguments.", exception.message
+    assert_equal "Not enough arguments.", exception.message
     
     # stapler remove input.pdf
     exception = assert_raise(ArgumentError) { @stapler.remove(@input) }

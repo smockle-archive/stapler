@@ -11,7 +11,7 @@ class Stapler < Thor
 
     case
       # stapler get input.pdf
-      when args.length == 1
+      when args.length <= 1
         raise ArgumentError, "Not enough arguments."
         
       # stapler get input.pdf output.pdf
@@ -51,7 +51,7 @@ class Stapler < Thor
     
     case
       # stapler insert input.pdf
-      when args.length == 1
+      when args.length <= 1
         raise ArgumentError, "Not enough arguments."
         
       # stapler insert input.pdf insert.pdf
@@ -89,7 +89,7 @@ class Stapler < Thor
 
   desc "join INPUT_PDFS OUTPUT_PDF", "Merge specified INPUT_PDFS into a single OUTPUT_PDF. "
   def join(*pdf_files)
-    if (pdf_files.length < 2)
+    if (pdf_files.length <= 1)
       raise ArgumentError, "Not enough arguments."
     end
     
@@ -106,7 +106,7 @@ class Stapler < Thor
         
     case
       # stapler remove input.pdf
-      when args.length == 1
+      when args.length <= 1
         raise ArgumentError, "Not enough arguments."
         
       # stapler remove input.pdf output.pdf
