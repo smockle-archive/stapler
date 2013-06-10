@@ -52,7 +52,19 @@ class TestStapler < Test::Unit::TestCase
 
     # stapler get missing.pdf *
     exception = assert_raise(ArgumentError) { @stapler.get(@missing, "2") }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
+
+    # stapler get input.pdf -4000..3
+    exception = assert_raise(RangeError) { @stapler.get(@input, "-4000..3") }
+    assert_equal "Specified page " + "-4000" + " does not exist.", exception.message
+
+    # stapler get input.pdf 2..4000
+    exception = assert_raise(RangeError) { @stapler.get(@input, "2..4000") }
+    assert_equal "Specified page " + "4000" + " does not exist.", exception.message
+
+    # stapler get input.pdf 4000
+    exception = assert_raise(RangeError) { @stapler.get(@input, "4000") }
+    assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler get input.pdf 2..3
     @stapler.get(@input, "2..3")
@@ -99,11 +111,15 @@ class TestStapler < Test::Unit::TestCase
     
     # stapler insert missing.pdf *
     exception = assert_raise(ArgumentError) { @stapler.insert(@missing, @a, @output, "2") }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
     
     # stapler insert input.pdf missing.pdf *
     exception = assert_raise(ArgumentError) { @stapler.insert(@input, @missing, @output, "2") }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
+
+    # stapler insert input.pdf insert.pdf 4000
+    exception = assert_raise(IndexError) { @stapler.insert(@input, @a, "4000") }
+    assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler insert input.pdf insert.pdf 2      
     @stapler.insert(@input, @a, "2")
@@ -137,11 +153,11 @@ class TestStapler < Test::Unit::TestCase
     
     # stapler join missing.pdf *
     exception = assert_raise(ArgumentError) { @stapler.join(@missing, @b, @output) }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
     
     # stapler join * missing.pdf *
     exception = assert_raise(ArgumentError) { @stapler.join(@a, @missing, @output) }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
         
     # stapler join a.pdf output.pdf
     @stapler.join(@a, @output)
@@ -173,8 +189,20 @@ class TestStapler < Test::Unit::TestCase
     
     # stapler remove missing.pdf *
     exception = assert_raise(ArgumentError) { @stapler.remove(@missing, "2") }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
-    
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
+
+    # stapler remove input.pdf -4000..3
+    exception = assert_raise(RangeError) { @stapler.remove(@input, "-4000..3") }
+    assert_equal "Specified page " + "-4000" + " does not exist.", exception.message
+
+    # stapler remove input.pdf 2..4000
+    exception = assert_raise(RangeError) { @stapler.remove(@input, "2..4000") }
+    assert_equal "Specified page " + "4000" + " does not exist.", exception.message
+
+    # stapler remove input.pdf 4000
+    exception = assert_raise(RangeError) { @stapler.remove(@input, "4000") }
+    assert_equal "Specified page " + "4000" + " does not exist.", exception.message
+
     # stapler remove input.pdf 2..3
     @stapler.remove(@input, "2..3")
     out = "output.pdf"
@@ -212,7 +240,7 @@ class TestStapler < Test::Unit::TestCase
     
     # stapler split missing.pdf
     exception = assert_raise(ArgumentError) { @stapler.split(@missing) }
-    assert_equal "Specified file " + @missing + " not found.", exception.message
+    assert_equal "Specified file " + @missing + " does not exist.", exception.message
     
     # stapler split input.pdf
     @stapler.split(@input)

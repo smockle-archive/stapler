@@ -19,7 +19,7 @@ class Stapler < Thor
       
       # stapler get missing.pdf *
       when args.length >= 2 && !(File.exist?(args[0]))
-        raise ArgumentError, "Specified file " + args[0] + " not found."
+        raise ArgumentError, "Specified file " + args[0] + " does not exist."
       
       # stapler get input.pdf 4..42
       when args.length == 2 && args[1].is_range
@@ -42,6 +42,11 @@ class Stapler < Thor
     end
 
     pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count
+    if range.first < 1
+      raise RangeError, "Specified page " + range.first.to_s + " does not exist."
+    elsif range.last > pdf_temp_nb_pages
+      raise RangeError, "Specified page " + range.last.to_s + " does not exist."
+    end
 
     Prawn::Document.generate(args[1].include?(".pdf") ? args[1] : "output.pdf", :skip_page_creation => true) do |output|
       (range).each do |i|
@@ -65,11 +70,11 @@ class Stapler < Thor
       
       # stapler input missing.pdf *
       when args.length >= 3 && !(File.exist?(args[0]))
-        raise ArgumentError, "Specified file " + args[0] + " not found."
+        raise ArgumentError, "Specified file " + args[0] + " does not exist."
       
       # stapler insert input.pdf missing.pdf *
       when args.length >= 3 && !(File.exist?(args[1]))
-        raise ArgumentError, "Specified file " + args[1] + " not found."
+        raise ArgumentError, "Specified file " + args[1] + " does not exist."
       
       # stapler insert input.pdf insert.pdf 4
       when args.length == 3 && args[1].include?(".pdf") && args[2].is_int
@@ -84,7 +89,10 @@ class Stapler < Thor
     end
     
     pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count + 1
-    
+    if insert < 1 || insert > pdf_temp_nb_pages
+      raise IndexError, "Specified page " + insert.to_s + " does not exist."
+    end
+        
     Prawn::Document.generate(args[2].include?(".pdf") ? args[2] : "output.pdf", :skip_page_creation => true) do |output|
       (1..pdf_temp_nb_pages).each do |i|
           if i < insert
@@ -110,7 +118,7 @@ class Stapler < Thor
     # stapler join * missing.pdf *
     pdf_files.each do |pdf|
       if pdf != pdf_files.last && !(File.exist?(pdf))
-        raise ArgumentError, "Specified file " + pdf + " not found."
+        raise ArgumentError, "Specified file " + pdf + " does not exist."
       end
     end
     
@@ -138,33 +146,38 @@ class Stapler < Thor
       
       # stapler remove missing.pdf *
       when args.length >= 2 && !(File.exist?(args[0]))
-        raise ArgumentError, "Specified file " + args[0] + " not found."
+        raise ArgumentError, "Specified file " + args[0] + " does not exist."
       
       # stapler remove input.pdf 4..42
       when args.length == 2 && args[1].is_range
-        remove = args[1].to_range
+        range = args[1].to_range
       
       # stapler remove input.pdf 4
       when args.length == 2 && args[1].is_int
-        remove = Range.new(args[1].to_i, args[1].to_i)
+        range = Range.new(args[1].to_i, args[1].to_i)
       
       # stapler remove input.pdf output.pdf 4..42
       when args.length == 3 && args[1].include?(".pdf") && args[2].is_range
-        remove = args[2].to_range
+        range = args[2].to_range
         
       # stapler remove input.pdf output.pdf 4
       when args.length == 3 && args[1].include?(".pdf") && args[2].is_int
-        remove = Range.new(args[2].to_i, args[2].to_i)
+        range = Range.new(args[2].to_i, args[2].to_i)
         
       else
         raise ArgumentError, "Invalid arguments."
     end
     
     pdf_temp_nb_pages = Prawn::Document.new(:template => args[0]).page_count
-    
+    if range.first < 1
+      raise RangeError, "Specified page " + range.first.to_s + " does not exist."
+    elsif range.last > pdf_temp_nb_pages
+      raise RangeError, "Specified page " + range.last.to_s + " does not exist."
+    end
+       
     Prawn::Document.generate(args[1].include?(".pdf") ? args[1] : "output.pdf", :skip_page_creation => true) do |output|
       (1..pdf_temp_nb_pages).each do |i|
-          if !(remove.include?(i))
+          if !(range.include?(i))
             output.start_new_page(:template => args[0], :template_page => i)
           end
       end
@@ -178,7 +191,7 @@ class Stapler < Thor
     
     # stapler split missing.pdf
     if !(File.exist?(pdf_file))
-      raise ArgumentError, "Specified file " + pdf_file + " not found."
+      raise ArgumentError, "Specified file " + pdf_file + " does not exist."
     end
     
     # stapler split input.pdf
