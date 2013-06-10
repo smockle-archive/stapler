@@ -8,6 +8,7 @@ class TestStapler < Test::Unit::TestCase
     @c = File.expand_path("../../tests/stapler_test_c.pdf", __FILE__)
     @input = File.expand_path("../../tests/stapler_test_input.pdf", __FILE__)
     @output = File.expand_path("../../tests/stapler_test_output.pdf", __FILE__)
+    @missing = File.expand_path("../../tests/stapler_test_missing.pdf", __FILE__)
     @stapler = Stapler.new
     
     Prawn::Document.generate(@a) do |pdf|
@@ -32,6 +33,7 @@ class TestStapler < Test::Unit::TestCase
     File.delete(@c)
     File.delete(@input)
     if File.exist?(@output) then File.delete(@output) end
+    if File.exist?(@missing) then File.delete(@missing) end
     @stapler = nil
   end
   
@@ -49,6 +51,8 @@ class TestStapler < Test::Unit::TestCase
     assert_equal "Not enough arguments.", exception.message
 
     # stapler get missing.pdf *
+    exception = assert_raise(ArgumentError) { @stapler.get(@missing, "2") }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
 
     # stapler get input.pdf 2..3
     @stapler.get(@input, "2..3")
@@ -90,11 +94,17 @@ class TestStapler < Test::Unit::TestCase
     assert_equal "Not enough arguments.", exception.message
     
     # stapler insert input.pdf insert.pdf output.pdf
+    exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a, @output) }
+    assert_equal "Not enough arguments.", exception.message
     
     # stapler insert missing.pdf *
+    exception = assert_raise(ArgumentError) { @stapler.insert(@missing, @a, @output, "2") }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
     
     # stapler insert input.pdf missing.pdf *
-    
+    exception = assert_raise(ArgumentError) { @stapler.insert(@input, @missing, @output, "2") }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
+
     # stapler insert input.pdf insert.pdf 2      
     @stapler.insert(@input, @a, "2")
     out = "output.pdf"
@@ -125,10 +135,14 @@ class TestStapler < Test::Unit::TestCase
     exception = assert_raise(ArgumentError) { @stapler.join(@output) }
     assert_equal "Not enough arguments.", exception.message
     
-    # stapler join * missing.pdf
-    
     # stapler join missing.pdf *
+    exception = assert_raise(ArgumentError) { @stapler.join(@missing, @b, @output) }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
     
+    # stapler join * missing.pdf *
+    exception = assert_raise(ArgumentError) { @stapler.join(@a, @missing, @output) }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
+        
     # stapler join a.pdf output.pdf
     @stapler.join(@a, @output)
     assert_equal Prawn::Document.new(:template => @a).page_count, 1
@@ -158,6 +172,8 @@ class TestStapler < Test::Unit::TestCase
     assert_equal "Not enough arguments.", exception.message
     
     # stapler remove missing.pdf *
+    exception = assert_raise(ArgumentError) { @stapler.remove(@missing, "2") }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
     
     # stapler remove input.pdf 2..3
     @stapler.remove(@input, "2..3")
@@ -195,6 +211,8 @@ class TestStapler < Test::Unit::TestCase
     assert_equal "wrong number of arguments (0 for 1)", exception.message
     
     # stapler split missing.pdf
+    exception = assert_raise(ArgumentError) { @stapler.split(@missing) }
+    assert_equal "Specified file " + @missing + " not found.", exception.message
     
     # stapler split input.pdf
     @stapler.split(@input)
