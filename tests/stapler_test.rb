@@ -48,6 +48,8 @@ class TestStapler < Test::Unit::TestCase
     exception = assert_raise(ArgumentError) { @stapler.get(@input, @output) }
     assert_equal "Not enough arguments.", exception.message
 
+    # stapler get missing.pdf *
+
     # stapler get input.pdf 2..3
     @stapler.get(@input, "2..3")
     out = "output.pdf"
@@ -87,6 +89,12 @@ class TestStapler < Test::Unit::TestCase
     exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a) }
     assert_equal "Not enough arguments.", exception.message
     
+    # stapler insert input.pdf insert.pdf output.pdf
+    
+    # stapler insert missing.pdf *
+    
+    # stapler insert input.pdf missing.pdf *
+    
     # stapler insert input.pdf insert.pdf 2      
     @stapler.insert(@input, @a, "2")
     out = "output.pdf"
@@ -117,6 +125,10 @@ class TestStapler < Test::Unit::TestCase
     exception = assert_raise(ArgumentError) { @stapler.join(@output) }
     assert_equal "Not enough arguments.", exception.message
     
+    # stapler join * missing.pdf
+    
+    # stapler join missing.pdf *
+    
     # stapler join a.pdf output.pdf
     @stapler.join(@a, @output)
     assert_equal Prawn::Document.new(:template => @a).page_count, 1
@@ -144,6 +156,8 @@ class TestStapler < Test::Unit::TestCase
     # stapler remove input.pdf output.pdf
     exception = assert_raise(ArgumentError) { @stapler.remove(@input, @output) }
     assert_equal "Not enough arguments.", exception.message
+    
+    # stapler remove missing.pdf *
     
     # stapler remove input.pdf 2..3
     @stapler.remove(@input, "2..3")
@@ -179,6 +193,8 @@ class TestStapler < Test::Unit::TestCase
     # stapler split
     exception = assert_raise(ArgumentError) { @stapler.split() }
     assert_equal "wrong number of arguments (0 for 1)", exception.message
+    
+    # stapler split missing.pdf
     
     # stapler split input.pdf
     @stapler.split(@input)
