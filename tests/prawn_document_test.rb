@@ -1,7 +1,7 @@
 require File.expand_path("../../extensions/prawn_document", __FILE__)
-require "test/unit"
- 
-class TestPrawnDocument < Test::Unit::TestCase
+require "minitest/autorun"
+
+class TestPrawnDocument < Minitest::Test
   def setup
     @a = File.expand_path("../../tests/prawn_document_test_a.pdf", __FILE__)
     @b = File.expand_path("../../tests/prawn_document_test_b.pdf", __FILE__)

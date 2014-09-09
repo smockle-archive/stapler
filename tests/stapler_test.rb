@@ -1,7 +1,7 @@
 load File.expand_path("../../stapler", __FILE__)
-require "test/unit"
+require "minitest/autorun"
 
-class TestStapler < Test::Unit::TestCase
+class TestStapler < Minitest::Test
   def setup
     @a = File.expand_path("../../tests/stapler_test_a.pdf", __FILE__)
     @b = File.expand_path("../../tests/stapler_test_b.pdf", __FILE__)
@@ -39,31 +39,31 @@ class TestStapler < Test::Unit::TestCase
   
   def test_get
     # stapler get
-    exception = assert_raise(ArgumentError) { @stapler.get() }
+    exception = assert_raises(ArgumentError) { @stapler.get() }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler get input.pdf
-    exception = assert_raise(ArgumentError) { @stapler.get(@input) }
+    exception = assert_raises(ArgumentError) { @stapler.get(@input) }
     assert_equal "Not enough arguments.", exception.message
       
     # stapler get input.pdf output.pdf
-    exception = assert_raise(ArgumentError) { @stapler.get(@input, @output) }
+    exception = assert_raises(ArgumentError) { @stapler.get(@input, @output) }
     assert_equal "Not enough arguments.", exception.message
 
     # stapler get missing.pdf *
-    exception = assert_raise(ArgumentError) { @stapler.get(@missing, "2") }
+    exception = assert_raises(ArgumentError) { @stapler.get(@missing, "2") }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
 
     # stapler get input.pdf -4000..3
-    exception = assert_raise(RangeError) { @stapler.get(@input, "-4000..3") }
+    exception = assert_raises(RangeError) { @stapler.get(@input, "-4000..3") }
     assert_equal "Specified page " + "-4000" + " does not exist.", exception.message
 
     # stapler get input.pdf 2..4000
-    exception = assert_raise(RangeError) { @stapler.get(@input, "2..4000") }
+    exception = assert_raises(RangeError) { @stapler.get(@input, "2..4000") }
     assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler get input.pdf 4000
-    exception = assert_raise(RangeError) { @stapler.get(@input, "4000") }
+    exception = assert_raises(RangeError) { @stapler.get(@input, "4000") }
     assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler get input.pdf 2..3
@@ -94,31 +94,31 @@ class TestStapler < Test::Unit::TestCase
   
   def test_insert
     # stapler insert
-    exception = assert_raise(ArgumentError) { @stapler.insert() }
+    exception = assert_raises(ArgumentError) { @stapler.insert() }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler insert input.pdf
-    exception = assert_raise(ArgumentError) { @stapler.insert(@input) }
+    exception = assert_raises(ArgumentError) { @stapler.insert(@input) }
     assert_equal "Not enough arguments.", exception.message
          
     # stapler insert input.pdf insert.pdf
-    exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a) }
+    exception = assert_raises(ArgumentError) { @stapler.insert(@input, @a) }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler insert input.pdf insert.pdf output.pdf
-    exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a, @output) }
+    exception = assert_raises(ArgumentError) { @stapler.insert(@input, @a, @output) }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler insert missing.pdf *
-    exception = assert_raise(ArgumentError) { @stapler.insert(@missing, @a, @output, "2") }
+    exception = assert_raises(ArgumentError) { @stapler.insert(@missing, @a, @output, "2") }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
     
     # stapler insert input.pdf missing.pdf *
-    exception = assert_raise(ArgumentError) { @stapler.insert(@input, @missing, @output, "2") }
+    exception = assert_raises(ArgumentError) { @stapler.insert(@input, @missing, @output, "2") }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
 
     # stapler insert input.pdf insert.pdf 4000
-    exception = assert_raise(IndexError) { @stapler.insert(@input, @a, "4000") }
+    exception = assert_raises(IndexError) { @stapler.insert(@input, @a, "4000") }
     assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler insert input.pdf insert.pdf 2      
@@ -131,7 +131,7 @@ class TestStapler < Test::Unit::TestCase
     if File.exist?(out) then File.delete(out) end
 
     # stapler insert input.pdf insert.pdf output.pdf
-    exception = assert_raise(ArgumentError) { @stapler.insert(@input, @a, @output) }
+    exception = assert_raises(ArgumentError) { @stapler.insert(@input, @a, @output) }
     assert_equal "Not enough arguments.", exception.message
       
     # stapler insert input.pdf insert.pdf output.pdf 2
@@ -144,19 +144,19 @@ class TestStapler < Test::Unit::TestCase
   
   def test_join
     # stapler join
-    exception = assert_raise(ArgumentError) { @stapler.join() }
+    exception = assert_raises(ArgumentError) { @stapler.join() }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler join output.pdf
-    exception = assert_raise(ArgumentError) { @stapler.join(@output) }
+    exception = assert_raises(ArgumentError) { @stapler.join(@output) }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler join missing.pdf *
-    exception = assert_raise(ArgumentError) { @stapler.join(@missing, @b, @output) }
+    exception = assert_raises(ArgumentError) { @stapler.join(@missing, @b, @output) }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
     
     # stapler join * missing.pdf *
-    exception = assert_raise(ArgumentError) { @stapler.join(@a, @missing, @output) }
+    exception = assert_raises(ArgumentError) { @stapler.join(@a, @missing, @output) }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
         
     # stapler join a.pdf output.pdf
@@ -176,31 +176,31 @@ class TestStapler < Test::Unit::TestCase
   
   def test_remove
     # stapler remove
-    exception = assert_raise(ArgumentError) { @stapler.remove() }
+    exception = assert_raises(ArgumentError) { @stapler.remove() }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler remove input.pdf
-    exception = assert_raise(ArgumentError) { @stapler.remove(@input) }
+    exception = assert_raises(ArgumentError) { @stapler.remove(@input) }
     assert_equal "Not enough arguments.", exception.message
       
     # stapler remove input.pdf output.pdf
-    exception = assert_raise(ArgumentError) { @stapler.remove(@input, @output) }
+    exception = assert_raises(ArgumentError) { @stapler.remove(@input, @output) }
     assert_equal "Not enough arguments.", exception.message
     
     # stapler remove missing.pdf *
-    exception = assert_raise(ArgumentError) { @stapler.remove(@missing, "2") }
+    exception = assert_raises(ArgumentError) { @stapler.remove(@missing, "2") }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
 
     # stapler remove input.pdf -4000..3
-    exception = assert_raise(RangeError) { @stapler.remove(@input, "-4000..3") }
+    exception = assert_raises(RangeError) { @stapler.remove(@input, "-4000..3") }
     assert_equal "Specified page " + "-4000" + " does not exist.", exception.message
 
     # stapler remove input.pdf 2..4000
-    exception = assert_raise(RangeError) { @stapler.remove(@input, "2..4000") }
+    exception = assert_raises(RangeError) { @stapler.remove(@input, "2..4000") }
     assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler remove input.pdf 4000
-    exception = assert_raise(RangeError) { @stapler.remove(@input, "4000") }
+    exception = assert_raises(RangeError) { @stapler.remove(@input, "4000") }
     assert_equal "Specified page " + "4000" + " does not exist.", exception.message
 
     # stapler remove input.pdf 2..3
@@ -235,11 +235,11 @@ class TestStapler < Test::Unit::TestCase
   
   def test_split
     # stapler split
-    exception = assert_raise(ArgumentError) { @stapler.split() }
+    exception = assert_raises(ArgumentError) { @stapler.split() }
     assert_equal "wrong number of arguments (0 for 1)", exception.message
     
     # stapler split missing.pdf
-    exception = assert_raise(ArgumentError) { @stapler.split(@missing) }
+    exception = assert_raises(ArgumentError) { @stapler.split(@missing) }
     assert_equal "Specified file " + @missing + " does not exist.", exception.message
     
     # stapler split input.pdf
