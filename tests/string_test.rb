@@ -1,7 +1,7 @@
 require File.expand_path("../../extensions/string", __FILE__)
 require "minitest/autorun"
 
-class TestString < Minitest::Test
+class TestString < Minitest::Unit::TestCase
   def test_is_int
     assert !("four".is_int)
     assert !("4.4".is_int)

@@ -1,7 +1,7 @@
 load File.expand_path("../../stapler", __FILE__)
 require "minitest/autorun"
 
-class TestStapler < Minitest::Test
+class TestStapler < Minitest::Unit::TestCase
   def setup
     @a = File.expand_path("../../tests/stapler_test_a.pdf", __FILE__)
     @b = File.expand_path("../../tests/stapler_test_b.pdf", __FILE__)
