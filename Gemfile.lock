@@ -11,4 +11,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  prawn
+  prawn (~> 1.2.1)
