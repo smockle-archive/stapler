@@ -1,11 +1,10 @@
-require File.expand_path("../../extensions/prawn_document", __FILE__)
-require "minitest/autorun"
+require "test_helper.rb"
 
-class TestPrawnDocument < Minitest::Unit::TestCase
+class TestPrawnDocument < MiniTest::Test
   def setup
-    @a = File.expand_path("../../tests/prawn_document_test_a.pdf", __FILE__)
-    @b = File.expand_path("../../tests/prawn_document_test_b.pdf", __FILE__)
-    @c = File.expand_path("../../tests/prawn_document_test_c.pdf", __FILE__)
+    @a = "prawn_document_test_a.pdf"
+    @b = "prawn_document_test_b.pdf"
+    @c = "prawn_document_test_c.pdf"
     
     Prawn::Document.generate(@a) do |pdf|
       pdf.text("PAGE_A")

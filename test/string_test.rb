@@ -1,7 +1,6 @@
-require File.expand_path("../../extensions/string", __FILE__)
-require "minitest/autorun"
+require "test_helper.rb"
 
-class TestString < Minitest::Unit::TestCase
+class TestString < MiniTest::Test
   def test_is_int
     assert !("four".is_int)
     assert !("4.4".is_int)

@@ -1,14 +1,13 @@
-load File.expand_path("../../stapler", __FILE__)
-require "minitest/autorun"
+require "test_helper.rb"
 
-class TestStapler < Minitest::Unit::TestCase
+class TestStapler < Minitest::Test
   def setup
-    @a = File.expand_path("../../tests/stapler_test_a.pdf", __FILE__)
-    @b = File.expand_path("../../tests/stapler_test_b.pdf", __FILE__)
-    @c = File.expand_path("../../tests/stapler_test_c.pdf", __FILE__)
-    @input = File.expand_path("../../tests/stapler_test_input.pdf", __FILE__)
-    @output = File.expand_path("../../tests/stapler_test_output.pdf", __FILE__)
-    @missing = File.expand_path("../../tests/stapler_test_missing.pdf", __FILE__)
+    @a = "stapler_test_a.pdf"
+    @b = "stapler_test_b.pdf"
+    @c = "stapler_test_c.pdf"
+    @input = "stapler_test_input.pdf"
+    @output = "stapler_test_output.pdf"
+    @missing = "stapler_test_missing.pdf"
     @stapler = Stapler.new
     
     Prawn::Document.generate(@a) do |pdf|
